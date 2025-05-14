@@ -1,5 +1,10 @@
+import Navbar from "@/components/Navbar";
+
 export default function TableManager() {
     return (
+      <>
+      <Navbar/>
+      
       <div className="min-h-screen bg-[#f1f1f1] px-6 py-10 text-[#3a855d]">
         <div className="max-w-5xl mx-auto space-y-12">
           {/* Page Header */}
@@ -51,6 +56,7 @@ export default function TableManager() {
           </section>
         </div>
       </div>
+      </>
     );
   }
   
