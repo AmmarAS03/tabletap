@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-export default async function Login() {
+export default function Login() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -33,7 +33,7 @@ export default async function Login() {
       if (role === 'admin') {
         router.push('/admin');
       } else if (role === 'tenant') {
-        router.push('/tables');
+        router.push('/dashboard');
       } else {
         router.push('/customer/menu');
       }

@@ -126,7 +126,26 @@ exports.Prisma.UserScalarFieldEnum = {
   email: 'email',
   password: 'password',
   role: 'role',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  isActive: 'isActive'
+};
+
+exports.Prisma.TenantScalarFieldEnum = {
+  userId: 'userId',
+  address: 'address'
+};
+
+exports.Prisma.MenuScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  tenantId: 'tenantId'
+};
+
+exports.Prisma.MenuItemScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  price: 'price',
+  menuId: 'menuId'
 };
 
 exports.Prisma.SortOrder = {
@@ -145,7 +164,10 @@ exports.Role = exports.$Enums.Role = {
 };
 
 exports.Prisma.ModelName = {
-  User: 'User'
+  User: 'User',
+  Tenant: 'Tenant',
+  Menu: 'Menu',
+  MenuItem: 'MenuItem'
 };
 
 /**
