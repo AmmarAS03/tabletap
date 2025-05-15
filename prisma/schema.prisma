@@ -23,6 +23,7 @@ model Tenant {
   userId  Int    @id
   address String
   menus   Menu[]
+  tables Table[]
   user    User   @relation(fields: [userId], references: [id])
 }
 
@@ -42,8 +43,18 @@ model MenuItem {
   menu   Menu   @relation(fields: [menuId], references: [id])
 }
 
+model Table {
+  id        Int      @id @default(autoincrement())
+  number    Int
+  tenantId  Int
+  tenant    Tenant   @relation(fields: [tenantId], references: [userId])
+  createdAt DateTime @default(now())
+}
+
+
 enum Role {
   admin
   tenant
   customer
 }
+

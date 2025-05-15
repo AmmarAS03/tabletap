@@ -148,6 +148,13 @@ exports.Prisma.MenuItemScalarFieldEnum = {
   menuId: 'menuId'
 };
 
+exports.Prisma.TableScalarFieldEnum = {
+  id: 'id',
+  number: 'number',
+  tenantId: 'tenantId',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -167,7 +174,8 @@ exports.Prisma.ModelName = {
   User: 'User',
   Tenant: 'Tenant',
   Menu: 'Menu',
-  MenuItem: 'MenuItem'
+  MenuItem: 'MenuItem',
+  Table: 'Table'
 };
 
 /**

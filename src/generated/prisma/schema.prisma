@@ -20,10 +20,11 @@ model User {
 }
 
 model Tenant {
-  userId  Int    @id
+  userId  Int     @id
   address String
   menus   Menu[]
-  user    User   @relation(fields: [userId], references: [id])
+  tables  Table[]
+  user    User    @relation(fields: [userId], references: [id])
 }
 
 model Menu {
@@ -40,6 +41,14 @@ model MenuItem {
   price  Float
   menuId Int
   menu   Menu   @relation(fields: [menuId], references: [id])
+}
+
+model Table {
+  id        Int      @id @default(autoincrement())
+  number    Int
+  tenantId  Int
+  tenant    Tenant   @relation(fields: [tenantId], references: [userId])
+  createdAt DateTime @default(now())
 }
 
 enum Role {
