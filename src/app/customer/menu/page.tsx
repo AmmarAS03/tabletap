@@ -1,116 +1,175 @@
-import Navbar from "@/components/Navbar";
-import { cookies } from "next/headers";
+"use client";
 
-export default async function CustomerMenu() {
-  const user = (await cookies()).get("user");
-  console.log("🧁 Auth Cookie:", user?.value);
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+
+type MenuItem = {
+  id: number;
+  name: string;
+  price: number;
+};
+
+type Menu = {
+  id: number;
+  title: string;
+  items: MenuItem[];
+};
+
+type SelectedItem = {
+  id: number;
+  name: string;
+  price: number;
+  quantity: number;
+};
+
+export default function CustomerMenu() {
+  const searchParams = useSearchParams();
+  const tableId = searchParams.get("table");
+  const router = useRouter();
+
+  const [menus, setMenus] = useState<Menu[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [cart, setCart] = useState<SelectedItem[]>([]);
+
+  const handlePlaceOrder = async () => {
+    console.log("THIS IS CART",cart)
+    const res = await fetch(`/api/customer/orders?table=${tableId}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ items: cart.map(i => ({ menuItemId: i.id, quantity: i.quantity })) }),
+    });
+  
+    const data = await res.json();
+    if (res.ok) {
+      router.push(`/customer/confirmation?order=${data.orderId}&table=${tableId}`);
+    } else {
+      alert(data.error || 'Failed to place order');
+    }
+  };
+  
+
+  useEffect(() => {
+    if (!tableId) {
+      setError("No table specified");
+      setLoading(false);
+      return;
+    }
+
+    const fetchMenu = async () => {
+      try {
+        const res = await fetch(`/api/menu?table=${tableId}`);
+        const data = await res.json();
+        console.log(res);
+        if (!res.ok) throw new Error(data.error || "Failed to fetch menu");
+        setMenus(data.menus);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMenu();
+  }, [tableId]);
+
   return (
-    <>
-      <Navbar />
-      <div className="min-h-screen bg-[#f1f1f1] px-4 py-8 text-[#3a855d]">
-        <div className="max-w-3xl mx-auto space-y-10">
-          {/* Header */}
-          <header className="text-center">
-            <h1 className="text-3xl font-bold mb-2">Welcome to TableTap</h1>
-            <p className="text-[#3a855d]/80">
-              Please browse the menu and place your order.
-            </p>
-          </header>
+    <div className="min-h-screen bg-[#f1f1f1] px-6 py-10 text-[#3a855d]">
+      <div className="max-w-4xl mx-auto">
+        <h1 className="text-3xl font-bold mb-6 text-center">Menu</h1>
 
-          {/* Categories and Items */}
-          <section className="space-y-8">
-            {/* Category */}
-            <div>
-              <h2 className="text-xl font-semibold mb-4">Appetizers</h2>
-              <div className="space-y-4">
-                <div className="bg-white p-4 rounded-xl shadow-sm border border-[#3a855d]/20">
-                  <div className="flex justify-between items-center">
+        {loading ? (
+          <p className="text-center text-[#3a855d]">Loading menu...</p>
+        ) : error ? (
+          <p className="text-center text-red-500">{error}</p>
+        ) : menus.length === 0 ? (
+          <p className="text-center text-gray-500">
+            No menu found for this table.
+          </p>
+        ) : (
+          menus.map((menu) => (
+            <div key={menu.id} className="mb-8">
+              <h2 className="text-xl font-semibold border-b border-[#3a855d]/20 pb-2 mb-4">
+                {menu.title}
+              </h2>
+              <ul className="space-y-4">
+                {menu.items.map((item) => (
+                  <li
+                    key={item.id}
+                    className="flex justify-between items-center bg-white p-4 rounded-xl shadow border border-[#3a855d]/10"
+                  >
+                    <span className="font-medium">{item.name}</span>
                     <div>
-                      <p className="font-medium">Garlic Bread</p>
-                      <p className="text-sm text-[#3a855d]/70">
-                        Toasted with herbs and butter
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-medium">$4.00</p>
-                      <button className="mt-1 text-sm text-[#3a855d] hover:underline">
+                      <span className="text-[#3a855d]/80 mr-5">
+                        ${item.price.toFixed(2)}
+                      </span>
+                      <button
+                        onClick={() => {
+                          setCart((prev) => {
+                            const exists = prev.find((i) => i.id === item.id);
+                            if (exists) {
+                              return prev.map((i) =>
+                                i.id === item.id
+                                  ? { ...i, quantity: i.quantity + 1 }
+                                  : i
+                              );
+                            } else {
+                              return [
+                                ...prev,
+                                {
+                                  id: item.id,
+                                  name: item.name,
+                                  price: item.price,
+                                  quantity: 1,
+                                },
+                              ];
+                            }
+                          });
+                        }}
+                        className="bg-[#3a855d] text-white px-3 py-1 rounded hover:bg-green-700 text-sm"
+                      >
                         Add
                       </button>
                     </div>
-                  </div>
-                </div>
-
-                <div className="bg-white p-4 rounded-xl shadow-sm border border-[#3a855d]/20">
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <p className="font-medium">Spring Rolls</p>
-                      <p className="text-sm text-[#3a855d]/70">
-                        Crispy rolls with veggies
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-medium">$5.50</p>
-                      <button className="mt-1 text-sm text-[#3a855d] hover:underline">
-                        Add
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                  </li>
+                ))}
+              </ul>
             </div>
+          ))
+        )}
 
-            {/* Another Category */}
-            <div>
-              <h2 className="text-xl font-semibold mb-4">Drinks</h2>
-              <div className="space-y-4">
-                <div className="bg-white p-4 rounded-xl shadow-sm border border-[#3a855d]/20">
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <p className="font-medium">Iced Tea</p>
-                      <p className="text-sm text-[#3a855d]/70">
-                        Refreshing and cool
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-medium">$3.00</p>
-                      <button className="mt-1 text-sm text-[#3a855d] hover:underline">
-                        Add
-                      </button>
-                    </div>
-                  </div>
-                </div>
+        <h3 className="text-lg font-semibold mb-2">Your Order</h3>
+        {cart.length === 0 ? (
+          <p className="text-sm text-gray-500">No items added yet.</p>
+        ) : (
+          <ul className="space-y-2">
+            {cart.map((item) => (
+              <li key={item.id} className="flex justify-between">
+                <span>
+                  {item.name} x {item.quantity}
+                </span>
+                <span>${(item.price * item.quantity).toFixed(2)}</span>
+              </li>
+            ))}
+          </ul>
+        )}
 
-                <div className="bg-white p-4 rounded-xl shadow-sm border border-[#3a855d]/20">
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <p className="font-medium">Lemonade</p>
-                      <p className="text-sm text-[#3a855d]/70">
-                        Freshly squeezed
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-medium">$3.50</p>
-                      <button className="mt-1 text-sm text-[#3a855d] hover:underline">
-                        Add
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
+        <p className="mt-4 font-bold">
+          Total: $
+          {cart
+            .reduce((acc, item) => acc + item.price * item.quantity, 0)
+            .toFixed(2)}
+        </p>
 
-          {/* View Cart */}
-          <div className="fixed bottom-4 left-1/2 -translate-x-1/2 w-full max-w-xs px-4">
-            <a
-              href="/customer/cart"
-              className="block text-center bg-[#3a855d] text-white py-3 rounded-xl shadow hover:bg-[#32724f] transition"
-            >
-              View Cart (2)
-            </a>
-          </div>
-        </div>
+        <button
+          disabled={cart.length === 0}
+          className="mt-4 bg-[#3a855d] text-white px-4 py-2 rounded hover:bg-green-700"
+          onClick={handlePlaceOrder}
+        >
+          Place Order
+        </button>
       </div>
-    </>
+    </div>
   );
 }

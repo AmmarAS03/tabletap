@@ -155,6 +155,20 @@ exports.Prisma.TableScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.OrderScalarFieldEnum = {
+  id: 'id',
+  tableId: 'tableId',
+  createdAt: 'createdAt',
+  status: 'status'
+};
+
+exports.Prisma.OrderItemScalarFieldEnum = {
+  id: 'id',
+  orderId: 'orderId',
+  menuItemId: 'menuItemId',
+  quantity: 'quantity'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -170,12 +184,21 @@ exports.Role = exports.$Enums.Role = {
   customer: 'customer'
 };
 
+exports.OrderStatus = exports.$Enums.OrderStatus = {
+  PENDING: 'PENDING',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   Tenant: 'Tenant',
   Menu: 'Menu',
   MenuItem: 'MenuItem',
-  Table: 'Table'
+  Table: 'Table',
+  Order: 'Order',
+  OrderItem: 'OrderItem'
 };
 
 /**

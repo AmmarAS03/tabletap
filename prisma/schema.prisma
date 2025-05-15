@@ -41,6 +41,7 @@ model MenuItem {
   price  Float
   menuId Int
   menu   Menu   @relation(fields: [menuId], references: [id])
+  orderItems OrderItem[]
 }
 
 model Table {
@@ -49,6 +50,25 @@ model Table {
   tenantId  Int
   tenant    Tenant   @relation(fields: [tenantId], references: [userId])
   createdAt DateTime @default(now())
+  orders    Order[]
+}
+
+model Order {
+  id        Int          @id @default(autoincrement())
+  tableId   Int
+  table     Table        @relation(fields: [tableId], references: [id])
+  createdAt DateTime     @default(now())
+  status    OrderStatus  @default(PENDING)
+  items     OrderItem[]
+}
+
+model OrderItem {
+  id         Int       @id @default(autoincrement())
+  orderId    Int
+  menuItemId Int
+  quantity   Int
+  order      Order     @relation(fields: [orderId], references: [id])
+  menuItem   MenuItem  @relation(fields: [menuItemId], references: [id])
 }
 
 
@@ -58,3 +78,9 @@ enum Role {
   customer
 }
 
+enum OrderStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
