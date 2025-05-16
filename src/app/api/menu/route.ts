@@ -12,7 +12,6 @@ export async function GET(req: NextRequest) {
 
   console.log("TABLE ID: ", tableId)
   try {
-    // Get table to find tenant
     const table = await prisma.table.findUnique({
       where: { id: Number(tableId) },
       include: { tenant: true },
@@ -22,7 +21,6 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Table not found" }, { status: 404 });
     }
 
-    // Get all menus + items for the tenant
     const menus = await prisma.menu.findMany({
       where: { tenantId: table.tenantId },
       include: { items: true },

@@ -1,5 +1,3 @@
-// src/app/api/restaurant/tables/route.ts
-
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@/generated/prisma';
 import { cookies } from 'next/headers';
@@ -16,7 +14,6 @@ async function getUserFromCookie() {
   }
 }
 
-// GET /api/restaurant/tables
 export async function GET() {
   const user = await getUserFromCookie();
   if (!user || user.role !== 'tenant') {
@@ -36,7 +33,6 @@ export async function GET() {
   }
 }
 
-// POST /api/restaurant/tables
 export async function POST(req: NextRequest) {
   const user = await getUserFromCookie();
   if (!user || user.role !== 'tenant') {
