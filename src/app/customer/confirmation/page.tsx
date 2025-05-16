@@ -1,8 +1,9 @@
 'use client';
 
+import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 
-export default function OrderConfirmation() {
+function ConfirmationContent() {
   const searchParams = useSearchParams();
   const tableId = searchParams.get('table');
 
@@ -25,5 +26,13 @@ export default function OrderConfirmation() {
         </a>
       </div>
     </div>
+  );
+}
+
+export default function OrderConfirmation() {
+  return (
+    <Suspense fallback={<div className="text-center p-10 text-[#3a855d]">Loading...</div>}>
+      <ConfirmationContent />
+    </Suspense>
   );
 }

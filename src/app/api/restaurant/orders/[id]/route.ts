@@ -16,14 +16,14 @@ async function getUserFromCookie() {
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   const user = await getUserFromCookie();
   if (!user || user.role !== "tenant") {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-
-  const orderId = parseInt(params.id);
+  const { id } = await context.params;
+  const orderId = parseInt(id);
   const { status } = await req.json();
 
   if (!["PENDING", "IN_PROGRESS", "COMPLETED", "CANCELLED"].includes(status)) {

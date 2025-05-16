@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from 'react';
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
@@ -23,7 +24,7 @@ type SelectedItem = {
   quantity: number;
 };
 
-export default function CustomerMenu() {
+function MenuContent() {
   const searchParams = useSearchParams();
   const tableId = searchParams.get("table");
   const router = useRouter();
@@ -34,7 +35,6 @@ export default function CustomerMenu() {
   const [cart, setCart] = useState<SelectedItem[]>([]);
 
   const handlePlaceOrder = async () => {
-    console.log("THIS IS CART",cart)
     const res = await fetch(`/api/customer/orders?table=${tableId}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -171,5 +171,14 @@ export default function CustomerMenu() {
         </button>
       </div>
     </div>
+  );
+}
+
+
+export default function MenuConfirmation() {
+  return (
+    <Suspense fallback={<div className="text-center p-10 text-[#3a855d]">Loading...</div>}>
+      <MenuContent />
+    </Suspense>
   );
 }

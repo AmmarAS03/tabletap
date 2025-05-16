@@ -12,12 +12,6 @@ export default function Home() {
             >
               Login
             </a>
-            <a
-              href="/login"
-              className="bg-[#3a855d] text-white px-4 py-2 rounded-xl hover:bg-[#32724f] transition"
-            >
-              Get Started
-            </a>
           </nav>
         </div>
       </header>
@@ -58,7 +52,7 @@ export default function Home() {
           <div className="bg-[#f1f1f1] p-6 rounded-xl shadow-sm border border-[#3a855d]/20">
             <h3 className="text-xl font-semibold mb-2">Order Management</h3>
             <p className="text-[#3a855d]/80">
-              View and manage customer orders as they come in — no paper tickets needed.
+              View and manage customer orders as they come in
             </p>
           </div>
         </div>
@@ -66,7 +60,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="bg-[#f1f1f1] py-6 text-center text-sm text-[#3a855d]/60 border-t border-[#3a855d]/20">
-        &copy; {new Date().getFullYear()} TableTap. All rights reserved.
+        &copy; {new Date().getFullYear()} This TableTap is for My INFS3202 Course Assignment.
       </footer>
     </div>
   );

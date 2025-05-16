@@ -17,14 +17,14 @@ async function getUserFromCookie() {
 // DELETE /api/restaurant/tables/[id]
 export async function DELETE(
   req: NextRequest,
-  context: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   const user = await getUserFromCookie();
   if (!user || user.role !== 'tenant') {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
-
-  const tableId = parseInt(context.params.id);
+  const { id } = await context.params;
+  const tableId = parseInt(id);
 
   if (isNaN(tableId)) {
     return NextResponse.json({ error: 'Invalid table ID' }, { status: 400 });
