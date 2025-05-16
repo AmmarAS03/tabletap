@@ -45,35 +45,33 @@ export default function AdminDashboard() {
     <>
       <Navbar />
       <div className="min-h-screen bg-[#f1f1f1] px-6 py-10 text-[#3a855d]">
-        <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
+        <h1 className="text-3xl font-bold mb-8">Admin Dashboard</h1>
 
-        {/* New Tenant Button */}
-        <div className="flex justify-end mb-4">
+        <div className="flex justify-end mb-6">
           <Link
             href="/admin/create"
-            className="bg-[#3a855d] text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
+            className="bg-[#3a855d] text-white px-5 py-2.5 rounded-lg hover:bg-green-700 transition hover:cursor-pointer shadow-md"
           >
             + Create New Tenant
           </Link>
         </div>
 
-        {/* Tenants Table */}
-        <div className="overflow-x-auto">
-          <table className="min-w-full bg-white rounded-lg shadow">
+        <div className="overflow-x-auto rounded-lg shadow">
+          <table className="min-w-full bg-white">
             <thead>
-              <tr className="text-left bg-[#3a855d] text-white">
-                <th className="py-3 px-4">Tenant Name</th>
-                <th className="py-3 px-4">Status</th>
-                <th className="py-3 px-4">Created At</th>
-                <th className="py-3 px-4">Actions</th>
+              <tr className="text-left bg-[#3a855d] text-white text-sm uppercase tracking-wide">
+                <th className="py-4 px-5">Tenant Name</th>
+                <th className="py-4 px-5">Status</th>
+                <th className="py-4 px-5">Created At</th>
+                <th className="py-4 px-5">Actions</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr>
                   <td
-                    colSpan={3}
-                    className="py-4 px-4 text-center text-gray-500"
+                    colSpan={4}
+                    className="py-6 px-4 text-center text-gray-500"
                   >
                     Loading...
                   </td>
@@ -81,19 +79,22 @@ export default function AdminDashboard() {
               ) : tenants.length === 0 ? (
                 <tr>
                   <td
-                    colSpan={3}
-                    className="py-4 px-4 text-center text-gray-500"
+                    colSpan={4}
+                    className="py-6 px-4 text-center text-gray-500"
                   >
                     No tenants found.
                   </td>
                 </tr>
               ) : (
                 tenants.map((tenant) => (
-                  <tr key={tenant.id} className="border-t">
-                    <td className="py-3 px-4">{tenant.name}</td>
-                    <td className="py-3 px-4">
+                  <tr
+                    key={tenant.id}
+                    className="border-t hover:bg-gray-50 transition"
+                  >
+                    <td className="py-4 px-5">{tenant.name}</td>
+                    <td className="py-4 px-5">
                       <span
-                        className={`px-2 py-1 text-xs rounded-full ${
+                        className={`px-3 py-1 text-sm font-medium rounded-full ${
                           tenant.isActive
                             ? "bg-green-100 text-green-700"
                             : "bg-gray-200 text-gray-600"
@@ -102,20 +103,19 @@ export default function AdminDashboard() {
                         {tenant.isActive ? "Active" : "Inactive"}
                       </span>
                     </td>
-
-                    <td className="py-3 px-4">
+                    <td className="py-4 px-5 text-sm text-gray-700">
                       {new Date(tenant.createdAt).toLocaleDateString()}
                     </td>
-                    <td className="py-3 px-4 space-x-2">
-                    <button
-                        className="text-blue-600 hover:underline"
+                    <td className="py-4 px-5 space-x-3">
+                      <button
+                        className="text-blue-600 hover:underline hover:cursor-pointer"
                         onClick={() => router.push(`/admin/edit/${tenant.id}`)}
                       >
                         Edit
                       </button>
 
                       <button
-                        className={`hover:underline ${
+                        className={`hover:underline hover:cursor-pointer ${
                           tenant.isActive ? "text-red-600" : "text-green-600"
                         }`}
                         onClick={async () => {
@@ -141,7 +141,6 @@ export default function AdminDashboard() {
 
                             const data = await res.json();
 
-                            // update local state
                             setTenants((prev) =>
                               prev.map((t) =>
                                 t.id === tenant.id
@@ -164,17 +163,17 @@ export default function AdminDashboard() {
             </tbody>
           </table>
         </div>
-        {/* Pagination Controls */}
+
         {totalPages > 1 && (
-          <div className="mt-4 flex justify-center space-x-2">
+          <div className="mt-6 flex justify-center gap-2">
             {Array.from({ length: totalPages }, (_, i) => (
               <button
                 key={i}
                 onClick={() => setPage(i + 1)}
-                className={`px-3 py-1 rounded ${
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition hover:cursor-pointer shadow-sm ${
                   page === i + 1
                     ? "bg-[#3a855d] text-white"
-                    : "bg-gray-200 text-gray-800"
+                    : "bg-gray-200 text-gray-800 hover:bg-gray-300"
                 }`}
               >
                 {i + 1}

@@ -9,7 +9,11 @@ export default function Dashboard() {
           <header className="mb-12">
             <h1 className="text-3xl font-bold mb-2">Dashboard</h1>
             <p className="text-[#3a855d]/80">
-              Manage your menu, tables, and customer orders below.
+              Hello! Ready to get started?
+            </p>
+            <p className="text-[#3a855d]/80">
+              Use the options below to manage your menu, tables, and customer
+              orders with ease.
             </p>
           </header>
 

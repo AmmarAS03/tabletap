@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import QRCode from "react-qr-code";
 import Navbar from "@/components/Navbar";
+import { useRouter } from "next/navigation";
 
 type Table = {
   id: number;
@@ -16,6 +17,7 @@ export default function TableManagement() {
   const [submitting, setSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [showQR, setShowQR] = useState<Record<number, boolean>>({});
+  const router = useRouter();
 
   const baseURL = typeof window !== "undefined" ? window.location.origin : "";
 
@@ -76,6 +78,11 @@ export default function TableManagement() {
     <>
       <Navbar />
       <div className="min-h-screen bg-[#f1f1f1] px-6 py-10 text-[#3a855d]">
+      <button
+          onClick={() => router.push(`/dashboard`)}
+          className="text-[#3a855d] hover:text-white hover:bg-[#3a855d] cursor-pointer px-4 py-1 rounded transition">
+          ← Back to Dashboard
+        </button>
         <div className="max-w-4xl mx-auto">
           <h1 className="text-3xl font-bold mb-2">Table Manager</h1>
           <p className="text-[#3a855d]/70 mb-6">

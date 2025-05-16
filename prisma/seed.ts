@@ -6,23 +6,11 @@ const prisma = new PrismaClient()
 async function main() {
   const users = [
     {
-      name: 'Admin',
-      email: 'admin@example.com',
-      password: 'Admin123',
-      role: 'admin',
-    },
-    {
-      name: 'Restaurant',
-      email: 'restaurant@example.com',
-      password: 'Password123',
-      role: 'tenant',
-    },
-    {
-      name: 'User',
-      email: 'user@example.com',
-      password: 'User123',
-      role: 'customer',
-    },
+      name: "Staff One",
+      email: "staff@example.com",
+      password: "Staff123",
+      role: "staff"
+    }
   ]
 
   for (const user of users) {

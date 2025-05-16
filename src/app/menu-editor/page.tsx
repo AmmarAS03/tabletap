@@ -2,6 +2,7 @@
 
 import Navbar from "@/components/Navbar";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 type MenuItem = {
   id: number;
@@ -24,6 +25,7 @@ export default function MenuEditor() {
     [key: number]: { name: string; price: string };
   }>({});
   const [addingItemTo, setAddingItemTo] = useState<number | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     fetchMenus();
@@ -96,6 +98,11 @@ export default function MenuEditor() {
     <>
       <Navbar />
       <div className="min-h-screen bg-[#f1f1f1] px-6 py-10 text-[#3a855d]">
+      <button
+          onClick={() => router.push(`/dashboard`)}
+          className="text-[#3a855d] hover:text-white hover:bg-[#3a855d] cursor-pointer px-4 py-1 rounded transition">
+          ← Back to Dashboard
+        </button>
         <div className="max-w-5xl mx-auto space-y-12">
           <header className="text-center">
             <h1 className="text-3xl font-bold mb-2">Menu Editor</h1>

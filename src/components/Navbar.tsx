@@ -16,7 +16,7 @@ export default function Navbar() {
       <h1 className="text-lg font-bold">TableTap</h1>
       <button
         onClick={handleLogout}
-        className="bg-white text-[#3a855d] px-4 py-2 rounded-xl hover:bg-gray-100 transition"
+        className="bg-white text-[#3a855d] px-4 py-2 rounded-xl hover:bg-gray-100 transition cursor-pointer"
       >
         Logout
       </button>

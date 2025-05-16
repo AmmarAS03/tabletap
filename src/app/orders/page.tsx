@@ -1,50 +1,131 @@
-export default function OrdersView() {
-    return (
+"use client";
+
+import Navbar from "@/components/Navbar";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+
+type OrderItem = {
+  id: number;
+  name: string;
+  quantity: number;
+};
+
+type Order = {
+  id: number;
+  status: string;
+  createdAt: string;
+  items: OrderItem[];
+  tableNumber: number;
+};
+
+export default function StaffOrderPage() {
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+
+  useEffect(() => {
+    fetchOrders();
+  }, []);
+
+  const fetchOrders = async () => {
+    try {
+      const res = await fetch("/api/restaurant/orders");
+      const data = await res.json();
+      console.log(data);
+      setOrders(data.orders);
+    } catch (err) {
+      console.error("Failed to fetch orders:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateOrderStatus = async (id: number, status: string) => {
+    try {
+      const res = await fetch(`/api/restaurant/orders/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status }),
+      });
+
+      if (!res.ok) throw new Error("Failed to update status");
+      await fetchOrders();
+    } catch (err) {
+      alert("Update failed");
+      console.error(err);
+    }
+  };
+
+  return (
+    <>
+      <Navbar />
       <div className="min-h-screen bg-[#f1f1f1] px-6 py-10 text-[#3a855d]">
-        <div className="max-w-5xl mx-auto space-y-10">
-          {/* Header */}
-          <header className="text-center">
-            <h1 className="text-3xl font-bold mb-2">Order Management</h1>
-            <p className="text-[#3a855d]/80">
-              View active orders and mark them as completed once served.
+        <button
+          onClick={() => router.push(`/dashboard`)}
+          className="text-[#3a855d] hover:text-white hover:bg-[#3a855d] cursor-pointer px-4 py-1 rounded transition">
+          ← Back to Dashboard
+        </button>
+        <div className="max-w-4xl mx-auto">
+          <h1 className="text-3xl font-bold mb-6 text-center">
+            Customer Orders
+          </h1>
+
+          {loading ? (
+            <p className="text-center text-[#3a855d]/70">Loading orders...</p>
+          ) : orders === undefined ? (
+            <p className="text-center text-[#3a855d]/60">
+              No orders placed yet.
             </p>
-          </header>
-  
-          {/* Order Cards */}
-          <section className="grid md:grid-cols-2 gap-6">
-            {[1, 2, 3].map((orderId) => (
-              <div
-                key={orderId}
-                className="bg-white rounded-2xl border border-[#3a855d]/20 shadow p-6 space-y-4"
-              >
-                <div className="flex justify-between items-center">
-                  <h2 className="text-xl font-semibold">Table {orderId}</h2>
-                  <span className="text-sm text-[#3a855d]/60">#Order-{1000 + orderId}</span>
-                </div>
-  
-                <ul className="space-y-2 text-sm">
-                  <li className="flex justify-between">
-                    <span>2 × Cheeseburger</span>
-                    <span>$18.00</span>
-                  </li>
-                  <li className="flex justify-between">
-                    <span>1 × Iced Tea</span>
-                    <span>$3.00</span>
-                  </li>
-                  <li className="text-[#3a855d]/70 italic">Note: No onions, extra sauce</li>
-                </ul>
-  
-                <button
-                  type="button"
-                  className="w-full bg-[#3a855d] text-white py-2 rounded-xl hover:bg-[#32724f] transition"
+          ) : (
+            <div className="space-y-6">
+              {orders.map((order) => (
+                <div
+                  key={order.id}
+                  className="bg-white p-6 rounded-xl border border-[#3a855d]/20 shadow hover:shadow-md transition"
                 >
-                  Mark as Completed
-                </button>
-              </div>
-            ))}
-          </section>
+                  <div className="flex justify-between items-center mb-4">
+                    <h2 className="font-semibold text-lg">
+                      Table {order.tableNumber} • Order #{order.id}
+                    </h2>
+                    <span className="text-sm px-3 py-1 rounded-full bg-[#3a855d]/10 text-[#3a855d] capitalize">
+                      {order.status.toLowerCase()}
+                    </span>
+                  </div>
+
+                  <ul className="mb-4 text-sm text-[#3a855d]/80 space-y-1">
+                    {order.items.map((item) => (
+                      <li key={item.id}>
+                        {item.quantity}× {item.name}
+                      </li>
+                    ))}
+                  </ul>
+
+                  {order.status !== "COMPLETED" && (
+                    <div className="flex gap-2">
+                      {order.status === "PENDING" && (
+                        <button
+                          onClick={() =>
+                            updateOrderStatus(order.id, "IN_PROGRESS")
+                          }
+                          className="bg-yellow-500 hover:bg-yellow-600 hover:cursor-pointer text-white px-4 py-1 rounded transition"
+                        >
+                          Mark In Progress
+                        </button>
+                      )}
+                      <button
+                        onClick={() => updateOrderStatus(order.id, "COMPLETED")}
+                        className="bg-green-600 hover:bg-green-700 hover:cursor-pointer text-white px-4 py-1 rounded transition"
+                      >
+                        Mark Completed
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
-    );
-  }
-  
+    </>
+  );
+}

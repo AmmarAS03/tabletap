@@ -10,6 +10,7 @@ export default function CreateTenantPage() {
     name: '',
     email: '',
     password: '',
+    confirmPassword: '',
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -19,11 +20,21 @@ export default function CreateTenantPage() {
     setLoading(true)
     setError(null)
 
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match')
+      setLoading(false)
+      return
+    }
+
     try {
       const res = await fetch('/api/admin/tenants', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+        }),
       })
 
       if (!res.ok) {
@@ -80,20 +91,33 @@ export default function CreateTenantPage() {
             />
           </div>
 
+          <div>
+            <label className="block mb-1">Confirm Password</label>
+            <input
+              type="password"
+              required
+              className="w-full px-4 py-2 border rounded"
+              value={formData.confirmPassword}
+              onChange={(e) =>
+                setFormData({ ...formData, confirmPassword: e.target.value })
+              }
+            />
+          </div>
+
           {error && <p className="text-red-600 text-sm">{error}</p>}
 
           <div className="flex justify-between">
             <button
               type="button"
               onClick={() => router.push('/admin')}
-              className="text-sm text-[#3a855d] underline"
+              className="text-sm text-[#3a855d] underline hover:cursor-pointer"
             >
               ← Back to Dashboard
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="bg-[#3a855d] text-white px-6 py-2 rounded hover:bg-green-700"
+              className="bg-[#3a855d] text-white px-6 py-2 rounded hover:bg-green-700 cursor-pointer"
             >
               {loading ? 'Creating...' : 'Create Tenant'}
             </button>

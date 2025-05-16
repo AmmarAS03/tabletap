@@ -81,10 +81,10 @@ export default function EditTenantPage() {
             />
           </div>
           <div className="flex justify-between">
-            <button type="button" onClick={() => router.push('/admin')} className="underline text-sm">
+            <button type="button" onClick={() => router.push('/admin')} className="underline text-sm hover:cursor-pointer">
               Cancel
             </button>
-            <button type="submit" className="bg-[#3a855d] text-white px-4 py-2 rounded hover:bg-green-700">
+            <button type="submit" className="bg-[#3a855d] text-white px-4 py-2 rounded hover:bg-green-700 cursor-pointer">
               Save Changes
             </button>
           </div>
